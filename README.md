@@ -1,2 +1,3 @@
 # pformat
-pformat provides powerful Python-like string formatting capabilities.
+pformat provides powerful string formatting capabilities. It mimics
+the Python's new style string formatting API.
