@@ -142,5 +142,5 @@ pformat <- function(format_string, ...) {
         return(repr(r))
     if (conversion == "a")
         return(repr(r))
-    stop(paste0("pformat: Unknown conversion specificier ", conversion))
+    stop(paste0("pformat: Unknown conversion specifier ", conversion))
 }
