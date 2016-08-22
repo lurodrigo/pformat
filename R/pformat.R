@@ -2,11 +2,11 @@
 .repr = function (x) paste0(capture.output(dput(x)), collapse = "\n")
 
 pformat <- function(format_string, ...) {
-    res = .pformat(format_string, list(...), 2)
+    res = .pformat(format_string, parent.frame(), list(...), 2)
     return(res$result)
 }
 
-.pformat <- function(format_string, pargs, recursion_depth, 
+.pformat <- function(format_string, envir, pargs, recursion_depth, 
                      auto_arg_index = 1) {
     if (recursion_depth < 0) 
         error("Max string recursion")
@@ -43,7 +43,7 @@ pformat <- function(format_string, ...) {
             
             # given the field_name, find the object it references
             # and the argument it came from
-            obj = .pformat_get_field(parsed[[i]]$field_name, pargs)
+            obj = .pformat_get_field(parsed[[i]]$field_name, envir, pargs)
             
             # do any conversion on the resulting object
             obj = .pformat_convert_field(obj, parsed[[i]]$conversion)
@@ -51,7 +51,7 @@ pformat <- function(format_string, ...) {
             
             # expand the format spec, if needed
             if ( parsed[[i]]$format_spec_needs_expanding ) {
-                rec = .pformat(parsed[[i]]$format_spec, pargs, 
+                rec = .pformat(parsed[[i]]$format_spec, envir, pargs, 
                                recursion_depth - 1, auto_arg_index)
                 parsed[[i]]$format_spec = rec$result
                 auto_arg_index = rec$index
@@ -73,11 +73,26 @@ pformat <- function(format_string, ...) {
     return(x)
 }
 
-.pformat_get_field = function(field_name, pargs) {
+.pformat_get_field = function(field_name, envir, pargs) {
     if (.is_integer(field_name))
         return (pargs[[as.integer(field_name)]])
-    else
-        return (eval(parse(text = field_name), envir = pargs))
+    else {
+        # first, try to evaluate the expression using the arguments
+        result = try({eval(parse(text = field_name), envir = pargs)},
+                     silent = TRUE)
+        if ( !("try-error" %in% class(result)) ) {
+            return (result)
+        } 
+        
+        # if could not find the argument, tries to evaluate on the parent frame
+        result = try({eval(parse(text = field_name), envir = envir)},
+                     silent = TRUE)
+        if ( !("try-error" %in% class(result)) ) {
+            return (result)
+        }
+        
+        stop(sprintf("Could not evaluate field '%s'", field_name))
+    }
 }
 
 .pformat_format_field = function(value, format_spec) {
@@ -91,8 +106,8 @@ pformat <- function(format_string, ...) {
     if (conversion == "s")
         return(as.character(value))
     if (conversion == "r")
-        return(repr(r))
+        return(.repr(r))
     if (conversion == "a")
-        return(repr(r))
+        return(.repr(r))
     stop(sprintf("Unknown conversion specifier '%s'", conversion))
 }
