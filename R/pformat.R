@@ -2,11 +2,20 @@
 .repr = function (x) paste0(capture.output(dput(x)), collapse = "\n")
 
 pformat <- function(format_string, ...) {
-    res = .pformat(format_string, parent.frame(), list(...), 2)
+    pargs = list(...)
+    
+    if ("with" %in% names(pargs)) {
+        with = pargs$with
+        pargs$with = NULL
+    } else {
+        with = NULL
+    }
+    
+    res = .pformat(format_string, pargs, with, parent.frame(), 2)
     return(res$result)
 }
 
-.pformat <- function(format_string, envir, pargs, recursion_depth, 
+.pformat <- function(format_string, pargs, with, envir, recursion_depth, 
                      auto_arg_index = 1) {
     if (recursion_depth < 0) 
         error("Max string recursion")
@@ -43,7 +52,7 @@ pformat <- function(format_string, ...) {
             
             # given the field_name, find the object it references
             # and the argument it came from
-            obj = .pformat_get_field(parsed[[i]]$field_name, envir, pargs)
+            obj = .pformat_get_field(parsed[[i]]$field_name, pargs, with, envir)
             
             # do any conversion on the resulting object
             obj = .pformat_convert_field(obj, parsed[[i]]$conversion)
@@ -51,7 +60,7 @@ pformat <- function(format_string, ...) {
             
             # expand the format spec, if needed
             if ( parsed[[i]]$format_spec_needs_expanding ) {
-                rec = .pformat(parsed[[i]]$format_spec, envir, pargs, 
+                rec = .pformat(parsed[[i]]$format_spec, pargs, with, envir, 
                                recursion_depth - 1, auto_arg_index)
                 parsed[[i]]$format_spec = rec$result
                 auto_arg_index = rec$index
@@ -73,19 +82,30 @@ pformat <- function(format_string, ...) {
     return(x)
 }
 
-.pformat_get_field = function(field_name, envir, pargs) {
+.pformat_get_field = function(field_name, pargs, with, envir) {
     if (.is_integer(field_name))
         return (pargs[[as.integer(field_name)]])
     else {
         # first, try to evaluate the expression using the arguments
-        result = try({eval(parse(text = field_name), envir = pargs)},
+        result = try({eval(parse(text = field_name), envir = pargs, 
+                           enclos = NULL)}, 
                      silent = TRUE)
         if ( !("try-error" %in% class(result)) ) {
             return (result)
         } 
         
-        # if could not find the argument, tries to evaluate on the parent frame
-        result = try({eval(parse(text = field_name), envir = envir)},
+        # tries to evaluate within the scope of "with"
+        result = try({eval(parse(text = field_name), envir = with, 
+                           enclos = NULL)},
+                     silent = TRUE)
+        if ( !("try-error" %in% class(result)) ) {
+            return (result)
+        } 
+
+        # if it still could not find the argument, 
+        # tries to evaluate on the parent frame
+        result = try({eval(parse(text = field_name), envir = envir, 
+                           enclos = NULL)},
                      silent = TRUE)
         if ( !("try-error" %in% class(result)) ) {
             return (result)
