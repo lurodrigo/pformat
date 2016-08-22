@@ -13,8 +13,7 @@ pformat <- function(format_string, ...) {
     
     result = list()
     
-    parser = pformatParser$new()
-    parsed = parser$parse(format_string)
+    parsed = pformat_parse(format_string)
     
     for (i in 1:length(parsed)) {
         # output the literal text
