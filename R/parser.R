@@ -175,5 +175,7 @@ pformat_parse = function(format_string) {
         l = c(l, list(obj))
     }
     
+    class(l) = c("pformat.compiled", "list")
+    
     return (l)
 }

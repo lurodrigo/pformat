@@ -20,9 +20,12 @@ pformat <- function(format_string, ...) {
     if (recursion_depth < 0) 
         error("Max string recursion")
     
-    result = list()
+    if ( inherits(format_string, "pformat.compiled"))
+        parsed = format_string
+    else
+        parsed = pformat_parse(format_string)
     
-    parsed = pformat_parse(format_string)
+    result = list()
     
     for (i in 1:length(parsed)) {
         # output the literal text
