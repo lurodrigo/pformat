@@ -10,12 +10,12 @@ features.
 * Supports expressions inside fields, avoiding intermediate variables.
 * **`with` parameter**: named fields can be evaluated inside an list or 
 data.frame, saving typing.
-* Supports evaluating on the caller's environment. You can feed pformat() only
+* Supports evaluation on the caller's environment. You can feed pformat() only
 the format string, and it will look for corresponding data on the environment.
 * It is **vectorized**, allowing formatting of extensive amounts of data with 
 just one call.
 * It is possible to **preparse** format strings, which may reduce computing time
 inside loops.
-* It is **extendable**: you can write a custom formatter for a class.
+* It is **extensible**: you can write a custom formatter for a class.
 
 ## Examples

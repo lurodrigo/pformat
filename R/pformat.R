@@ -1,6 +1,29 @@
 
 .repr = function (x) paste0(capture.output(dput(x)), collapse = "\n")
 
+#' Perfoms formatted printing
+#' 
+#' @description pformat() 
+#'
+#' @param format_string a format string (See details for specification)
+#' @param with a \code{(pair)list}, \code{data.frame} or \code{environment} on 
+#' which named fields or expressions can be evaluated
+#'
+#' @return returns a `character` vector with the output
+#' @export
+#' 
+#' @details Since internally \code{pformat()} uses \code{paste0}, it is 
+#' naturally vectorized.
+#' 
+#' \strong{On evaluation:} non-named fields (manually or automatically numbered)
+#' are evaluated only over the list of arguments passed. If there's no matching
+#' value, an error will be raised.
+#' 
+#' named fields and expressions: names are searched first on the keyword 
+#' arguments, then on \code{names(with)} and only then on the caller's
+#' environment.
+#'
+#' @examples
 pformat <- function(format_string, ...) {
     pargs = list(...)
     
@@ -15,10 +38,46 @@ pformat <- function(format_string, ...) {
     return(res$result)
 }
 
+#' Substitutes the values on the parsed format string
+#'
+#' @param pargs the args passed to pformat() (except `with`)
+#' @param envir the caller's environment
+#' @param recursion_depth the current recursion depth. Starts with 2.
+#' @param auto_arg_index the index for non-named fields
+#' @inheritParams pformat
+#'
+#' @return a list containing two fields
+#' \describe{
+#'     \item{result}{the output string}
+#'     \item{index}{the value of auto_arg_index}
+#' }
+#'
+#' @examples
 .pformat <- function(format_string, pargs, with, envir, recursion_depth, 
                      auto_arg_index = 1) {
     if (recursion_depth < 0) 
-        error("Max string recursion")
+        stop("Max string recursion")
+    
+    with = as.list(with)
+    for (name in names(pargs)) {
+        with[[name]] = pargs[[name]]
+    }
+    
+    get_field = function(field_name) {
+        if (.is_integer(field_name))
+            return (pargs[[as.integer(field_name)]])
+        else {
+            # first, try to evaluate the expression using the arguments
+            result = try({eval(parse(text = field_name), envir = with, 
+                               enclos = envir)}, 
+                         silent = TRUE)
+            if ( !("try-error" %in% class(result)) ) {
+                return (result)
+            } 
+            
+            stop(sprintf("Could not evaluate field '%s'", field_name))
+        }
+    }
     
     if ( inherits(format_string, "pformat.compiled"))
         parsed = format_string
@@ -55,10 +114,10 @@ pformat <- function(format_string, ...) {
             
             # given the field_name, find the object it references
             # and the argument it came from
-            obj = .pformat_get_field(parsed[[i]]$field_name, pargs, with, envir)
+            obj = get_field(parsed[[i]]$field_name)
             
             # do any conversion on the resulting object
-            obj = .pformat_convert_field(obj, parsed[[i]]$conversion)
+            obj = .convert_field(obj, parsed[[i]]$conversion)
             
             
             # expand the format spec, if needed
@@ -70,13 +129,20 @@ pformat <- function(format_string, ...) {
             }
             
             # format the object and append to the result
-            result = c(result, list(.pformat_format_field(obj, format_spec)))
+            result = c(result, list(pformatter(obj, parsed[[i]]$format_spec)))
         }
     }
     
     return (list(result = do.call(paste0, result), index = auto_arg_index))
 }
 
+#' Tells if a string represents an integer
+#'
+#' @param s a string
+#'
+#' @return a logical vector
+#' 
+#' @details Doesn't work if the string ends with an L
 .is_integer = function(s) {
     v = getOption("warn")
     options(warn = -1)
@@ -85,52 +151,15 @@ pformat <- function(format_string, ...) {
     return(x)
 }
 
-.pformat_get_field = function(field_name, pargs, with, envir) {
-    if (.is_integer(field_name))
-        return (pargs[[as.integer(field_name)]])
-    else {
-        # first, try to evaluate the expression using the arguments
-        result = try({eval(parse(text = field_name), envir = pargs, 
-                           enclos = NULL)}, 
-                     silent = TRUE)
-        if ( !("try-error" %in% class(result)) ) {
-            return (result)
-        } 
-        
-        # tries to evaluate within the scope of "with"
-        result = try({eval(parse(text = field_name), envir = with, 
-                           enclos = NULL)},
-                     silent = TRUE)
-        if ( !("try-error" %in% class(result)) ) {
-            return (result)
-        } 
-
-        # if it still could not find the argument, 
-        # tries to evaluate on the parent frame
-        result = try({eval(parse(text = field_name), envir = envir, 
-                           enclos = NULL)},
-                     silent = TRUE)
-        if ( !("try-error" %in% class(result)) ) {
-            return (result)
-        }
-        
-        stop(sprintf("Could not evaluate field '%s'", field_name))
-    }
-}
-
-.pformat_format_field = function(value, format_spec) {
-    return(as.character(value))
-}
-
-.pformat_convert_field = function(value, conversion) {
-    # do any conversion on the resulting object
+# do any conversion on the resulting object
+.convert_field = function(value, conversion) {
     if (is.null(conversion))
         return(value)
     if (conversion == "s")
         return(as.character(value))
     if (conversion == "r")
-        return(.repr(r))
+        return(.repr(value))
     if (conversion == "a")
-        return(.repr(r))
+        return(.repr(value))
     stop(sprintf("Unknown conversion specifier '%s'", conversion))
 }
