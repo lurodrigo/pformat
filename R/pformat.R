@@ -3,24 +3,32 @@
 
 #' Perfoms formatted printing
 #' 
-#' @description pformat() 
+#' @description provides pretty string formatting capabilities through
+#' a format specification
 #'
-#' @param format_string a format string (See details for specification)
+#' @param format_string a format string (See details for specification) or a
+#' \code{pformat.compiled} object returned from \code{pformat_parse()}
 #' @param with a \code{(pair)list}, \code{data.frame} or \code{environment} on 
 #' which named fields or expressions can be evaluated
 #'
 #' @return returns a `character` vector with the output
 #' @export
 #' 
-#' @details Since internally \code{pformat()} uses \code{paste0}, it is 
-#' naturally vectorized.
+#' @details Numbered fields start from 1 (not from 0, as in Python.)
 #' 
-#' \strong{On evaluation:} non-named fields (manually or automatically numbered)
-#' are evaluated only over the list of arguments passed. If there's no matching
-#' value, an error will be raised.
+#' Since internally \code{pformat()} uses \code{paste0()}, it is naturally 
+#' vectorized. 
 #' 
-#' named fields and expressions: names are searched first on the keyword 
-#' arguments, then on \code{names(with)} and only then on the caller's
+#' Non-named fields (manually or automatically numbered) are evaluated only over
+#' the list of arguments passed. You can't write expressions involving non-named
+#' fields. In Python, you can write \code{"{0.real}".format(1+2j)}
+#' and it will return a string with the real part of the number. You can't do
+#' this here, it's a design choice. Allowing it would imply limiting the 
+#' kind of expressions one could use as a field, and expressions surely provide
+#' more power than numbered fields.
+#' 
+#' On named fields (and expressions in general), names are searched first on the 
+#' keyword arguments, then on \code{names(with)} and only then on the caller's
 #' environment.
 #'
 #' @examples
