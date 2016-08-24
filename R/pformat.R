@@ -106,14 +106,14 @@ pformat <- function(format_string, ...) {
             # handle arg indexing when empty field_names are given
             if ( parsed[[i]]$field_name == "" ) {
                 if ( auto_arg_index == 0 )
-                    stop("cannot switch from manual field specification to automatic field numbering")
+                    stop("Cannot switch from manual field specification to automatic field numbering")
                 
                 parsed[[i]]$field_name = as.character(auto_arg_index)
                 auto_arg_index = auto_arg_index + 1
             } else if ( .is_integer(parsed[[i]]$field_name) ) { 
                 # is a string representing an integer
                 if ( auto_arg_index > 1 )
-                    stop("cannot switch from manual field specification to automatic field numbering")
+                    stop("Cannot switch from manual field specification to automatic field numbering")
                 
                 # disable auto arg incrementing, if it gets
                 # used later on, then an exception will be raised
