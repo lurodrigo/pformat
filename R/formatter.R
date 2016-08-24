@@ -45,6 +45,17 @@ pformatter.complex = function(value, format_spec) {
 
 pformatter.character = function(value, format_spec) {
     spec = .parse_format_spec(format_spec)
+    
+    if ( !(spec$type %in% c("s", "")) ) {
+        stop(sprintf("Invalid presentation type '%s' for character objects"),
+             spec_type)
+    } 
+    
+    spec$align = list('<' = "left", '>' = "right", '^' = "centre")[[spec$align]]
+    
+    if ( is.null(spec$align) ) spec$align = "left"
+    if ( spec$width == -1 ) spec$width = NULL
+    return (format(value, width = spec$width, justify = spec$align))
 }
 
 pformatter.Date = function(value, format_spec) {
