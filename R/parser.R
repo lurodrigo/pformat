@@ -137,7 +137,7 @@ pformat_parse = function(format_string) {
         
         markup_follows = FALSE
         
-        if (it$start >= it$end)
+        if (it$start > it$end)
             return (NULL);
         
         start = it$start
@@ -174,7 +174,7 @@ pformat_parse = function(format_string) {
         }
         
         obj$literal_text = substr(format_string, start, start + len - 1)
-        
+
         if (!markup_follows)
             return (obj)
         
