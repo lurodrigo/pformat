@@ -1,7 +1,7 @@
 
 .repr = function (x) paste0(capture.output(dput(x)), collapse = "\n")
 
-#' Perfoms formatted printing
+#' Perfoms string interpolation
 #' 
 #' @description provides pretty string formatting capabilities through
 #' a format specification
