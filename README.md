@@ -50,7 +50,7 @@ a single call
 [1] "Name: Abby; Age: 22" "Name: Bob; Age: 23"  "Name: Carl; Age: 24"
 ```
 
-Usual recyling rules apply:
+Usual recycling rules apply:
 
 ```R
 > pformat("{}-{}{}", "expr", c("a", "b", "c"), 1:2)
@@ -88,7 +88,7 @@ same output.
 
 ### Expressions
 
-Placeholders can hold not only variable names, but any R expression, provided
+Placeholders can hold not only variable names but any R expression, provided
 that pformat supports its result type.
 
 ```R
@@ -105,10 +105,18 @@ that pformat supports its result type.
 [1] "W. Unzueta"  "F. Winstead" "L. Chambers"
 ```
 
-### Formatting Dates
+## Formatting
 
-Date formatting uses the traditional `strftime()` conversion specification.
-See `strftime`'s help page for more details.
+### Integers, floating point numbers, and strings
+
+pformat uses (will use) the same format string syntax as Python. See 
+[Python docs](https://docs.python.org/3/library/string.html#string-formatting). 
+Development in progress.
+
+### Dates
+
+Date formatting uses the traditional `strftime()` conversion specification, just 
+like Python. See `strftime`'s help page for more details.
 
 ```R
 > pformat("Mother's day: {:%d/%m/%Y}", as.Date("2016-05-08"))
