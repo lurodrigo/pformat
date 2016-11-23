@@ -203,11 +203,6 @@ pformat_parse = function(format_string) {
   return (l)
 }
 
-.get_digit = list(
-  "0" = 0L, "1" = 1L, "2" = 2L, "3" = 3L, "4" = 4L,
-  "5" = 5L, "6" = 6L, "7" = 7L, "8" = 8L, "9" = 9L
-)
-
 # This function is a rewriting of cpython's parse_internal_render_format_spec(),
 # located on /Python/formatter_unicode.c
 .parse_format_spec = function(format_spec) {
@@ -237,7 +232,9 @@ pformat_parse = function(format_string) {
     
     while (pos <= end) {
       
-      digitval = .get_digit[[char_at(pos)]]
+      digitval = switch(char_at(pos),
+                        "0" = 0L, "1" = 1L, "2" = 2L, "3" = 3L, "4" = 4L,
+                        "5" = 5L, "6" = 6L, "7" = 7L, "8" = 8L, "9" = 9L)
       if (is.null(digitval))
         break
       

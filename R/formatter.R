@@ -54,7 +54,10 @@ pformatter.character = function(value, format_spec) {
          spec_type)
   } 
   
-  spec$align = list('<' = "left", '>' = "right", '^' = "centre")[[spec$align]]
+  spec$align = switch(spec$align, 
+                      '<' = "left", 
+                      '>' = "right", 
+                      '^' = "centre")
   
   if ( is.null(spec$align) ) spec$align = "left"
   if ( spec$width == -1 ) spec$width = NULL
