@@ -43,7 +43,7 @@ pformatter.double = function(value, format_spec) {
 }
 
 pformatter.complex = function(value, format_spec) {
-  "complex"
+  value
 }
 
 pformatter.character = function(value, format_spec) {
