@@ -33,17 +33,17 @@
 #'
 #' @examples
 pformat <- function(format_string, ...) {
-    pargs = list(...)
-    
-    if ("with" %in% names(pargs)) {
-        with = pargs$with
-        pargs$with = NULL
-    } else {
-        with = NULL
-    }
-    
-    res = .pformat(format_string, pargs, with, parent.frame(), 2)
-    return(res$result)
+  pargs = list(...)
+  
+  if ("with" %in% names(pargs)) {
+    with = pargs$with
+    pargs$with = NULL
+  } else {
+    with = NULL
+  }
+  
+  res = .pformat(format_string, pargs, with, parent.frame(), 2)
+  return(res$result)
 }
 
 #' Substitutes the values on the parsed format string
@@ -63,85 +63,85 @@ pformat <- function(format_string, ...) {
 #' @examples
 .pformat <- function(format_string, pargs, with, envir, recursion_depth, 
                      auto_arg_index = 1) {
-    if (recursion_depth < 0) 
-        stop("Max string recursion")
-    
-    with = as.list(with)
-    for (name in names(pargs)) {
-        with[[name]] = pargs[[name]]
+  if (recursion_depth < 0) 
+    stop("Max string recursion")
+  
+  with = as.list(with)
+  for (name in names(pargs)) {
+    with[[name]] = pargs[[name]]
+  }
+  
+  get_field = function(field_name) {
+    if (.is_integer(field_name))
+      return (pargs[[as.integer(field_name)]])
+    else {
+      # first, try to evaluate the expression using the arguments
+      result = try({eval(parse(text = field_name), envir = with, 
+                         enclos = envir)}, 
+                   silent = TRUE)
+      if ( !("try-error" %in% class(result)) ) {
+        return (result)
+      } 
+      
+      stop(sprintf("Could not evaluate field '%s'", field_name))
     }
+  }
+  
+  if ( inherits(format_string, "pformat.compiled"))
+    parsed = format_string
+  else
+    parsed = pformat_parse(format_string)
+  
+  result = list()
+  
+  for (i in 1:length(parsed)) {
+    # output the literal text
+    if ( parsed[[i]]$literal_text != "" )
+      result = c(result, list(parsed[[i]]$literal_text))
     
-    get_field = function(field_name) {
-        if (.is_integer(field_name))
-            return (pargs[[as.integer(field_name)]])
-        else {
-            # first, try to evaluate the expression using the arguments
-            result = try({eval(parse(text = field_name), envir = with, 
-                               enclos = envir)}, 
-                         silent = TRUE)
-            if ( !("try-error" %in% class(result)) ) {
-                return (result)
-            } 
-            
-            stop(sprintf("Could not evaluate field '%s'", field_name))
-        }
+    # if there's a field, output it
+    if ( !is.null(parsed[[i]]$field_name) ) {
+      # this is some markup, find the object and do the formatting
+      
+      # handle arg indexing when empty field_names are given
+      if ( parsed[[i]]$field_name == "" ) {
+        if ( auto_arg_index == 0 )
+          stop("Cannot switch from manual field specification to automatic field numbering")
+        
+        parsed[[i]]$field_name = as.character(auto_arg_index)
+        auto_arg_index = auto_arg_index + 1
+      } else if ( .is_integer(parsed[[i]]$field_name) ) { 
+        # is a string representing an integer
+        if ( auto_arg_index > 1 )
+          stop("Cannot switch from manual field specification to automatic field numbering")
+        
+        # disable auto arg incrementing, if it gets
+        # used later on, then an exception will be raised
+        auto_arg_index = 0
+      }
+      
+      # given the field_name, find the object it references
+      # and the argument it came from
+      obj = get_field(parsed[[i]]$field_name)
+      
+      # do any conversion on the resulting object
+      obj = .convert_field(obj, parsed[[i]]$conversion)
+      
+      
+      # expand the format spec, if needed
+      if ( parsed[[i]]$format_spec_needs_expanding ) {
+        rec = .pformat(parsed[[i]]$format_spec, pargs, with, envir, 
+                       recursion_depth - 1, auto_arg_index)
+        parsed[[i]]$format_spec = rec$result
+        auto_arg_index = rec$index
+      }
+      
+      # format the object and append to the result
+      result = c(result, list(pformatter(obj, parsed[[i]]$format_spec)))
     }
-    
-    if ( inherits(format_string, "pformat.compiled"))
-        parsed = format_string
-    else
-        parsed = pformat_parse(format_string)
-    
-    result = list()
-    
-    for (i in 1:length(parsed)) {
-        # output the literal text
-        if ( parsed[[i]]$literal_text != "" )
-            result = c(result, list(parsed[[i]]$literal_text))
-            
-        # if there's a field, output it
-        if ( !is.null(parsed[[i]]$field_name) ) {
-            # this is some markup, find the object and do the formatting
-            
-            # handle arg indexing when empty field_names are given
-            if ( parsed[[i]]$field_name == "" ) {
-                if ( auto_arg_index == 0 )
-                    stop("Cannot switch from manual field specification to automatic field numbering")
-                
-                parsed[[i]]$field_name = as.character(auto_arg_index)
-                auto_arg_index = auto_arg_index + 1
-            } else if ( .is_integer(parsed[[i]]$field_name) ) { 
-                # is a string representing an integer
-                if ( auto_arg_index > 1 )
-                    stop("Cannot switch from manual field specification to automatic field numbering")
-                
-                # disable auto arg incrementing, if it gets
-                # used later on, then an exception will be raised
-                auto_arg_index = 0
-            }
-            
-            # given the field_name, find the object it references
-            # and the argument it came from
-            obj = get_field(parsed[[i]]$field_name)
-            
-            # do any conversion on the resulting object
-            obj = .convert_field(obj, parsed[[i]]$conversion)
-            
-            
-            # expand the format spec, if needed
-            if ( parsed[[i]]$format_spec_needs_expanding ) {
-                rec = .pformat(parsed[[i]]$format_spec, pargs, with, envir, 
-                               recursion_depth - 1, auto_arg_index)
-                parsed[[i]]$format_spec = rec$result
-                auto_arg_index = rec$index
-            }
-            
-            # format the object and append to the result
-            result = c(result, list(pformatter(obj, parsed[[i]]$format_spec)))
-        }
-    }
-    
-    return (list(result = do.call(paste0, result), index = auto_arg_index))
+  }
+  
+  return (list(result = do.call(paste0, result), index = auto_arg_index))
 }
 
 #' Tells if a string represents an integer
@@ -152,22 +152,22 @@ pformat <- function(format_string, ...) {
 #' 
 #' @details Doesn't work if the string ends with an L
 .is_integer = function(s) {
-    v = getOption("warn")
-    options(warn = -1)
-    x = !is.na(as.integer(s))
-    options(warn = v) 
-    return(x)
+  v = getOption("warn")
+  options(warn = -1)
+  x = !is.na(as.integer(s))
+  options(warn = v) 
+  return(x)
 }
 
 # do any conversion on the resulting object
 .convert_field = function(value, conversion) {
-    if (is.null(conversion))
-        return(value)
-    if (conversion == "s")
-        return(as.character(value))
-    if (conversion == "r")
-        return(.repr(value))
-    if (conversion == "a")
-        return(.repr(value))
-    stop(sprintf("Unknown conversion specifier '%s'", conversion))
+  if (is.null(conversion))
+    return(value)
+  if (conversion == "s")
+    return(as.character(value))
+  if (conversion == "r")
+    return(.repr(value))
+  if (conversion == "a")
+    return(.repr(value))
+  stop(sprintf("Unknown conversion specifier '%s'", conversion))
 }

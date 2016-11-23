@@ -14,8 +14,8 @@ data.frame, saving typing.
 the format string, and it will look for corresponding data on the environment.
 * It is **vectorized**, allowing formatting of extensive amounts of data with 
 a single call.
-* It is possible to **preparse** format strings, which can avoid unnecessary 
+* It is possible to **preparse** format strings, which may avoid unnecessary 
 calls and reduce computing time inside loops.
-* It is **extensible**: you can write a custom formatter for a class.
+* It is **extensible**: you can write custom formatters for your classes.
 
 ## Examples
