@@ -2,7 +2,7 @@
 % Please edit documentation in R/pformat.R
 \name{pformat}
 \alias{pformat}
-\title{Perfoms formatted printing}
+\title{Perfoms string formatting and interpolation}
 \usage{
 pformat(format_string, ...)
 }
