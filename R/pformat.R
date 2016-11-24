@@ -93,23 +93,23 @@ pformat <- function(format_string, ...) {
   
   for (i in 1:length(parsed)) {
     # output the literal text
-    if ( parsed[[i]]$literal_text != "" )
+    if (parsed[[i]]$literal_text != "")
       result = c(result, list(parsed[[i]]$literal_text))
     
     # if there's a field, output it
-    if ( !is.null(parsed[[i]]$field_name) ) {
+    if (!is.null(parsed[[i]]$field_name) ) {
       # this is some markup, find the object and do the formatting
       
       # handle arg indexing when empty field_names are given
-      if ( parsed[[i]]$field_name == "" ) {
-        if ( auto_arg_index == 0 )
+      if (parsed[[i]]$field_name == "") {
+        if (auto_arg_index == 0)
           stop("Cannot switch from manual field specification to automatic field numbering")
         
         parsed[[i]]$field_name = as.character(auto_arg_index)
         auto_arg_index = auto_arg_index + 1
-      } else if ( .is_integer(parsed[[i]]$field_name) ) { 
+      } else if (.is_integer(parsed[[i]]$field_name)) { 
         # is a string representing an integer
-        if ( auto_arg_index > 1 )
+        if (auto_arg_index > 1)
           stop("Cannot switch from manual field specification to automatic field numbering")
         
         # disable auto arg incrementing, if it gets
@@ -126,7 +126,7 @@ pformat <- function(format_string, ...) {
       
       
       # expand the format spec, if needed
-      if ( parsed[[i]]$format_spec_needs_expanding ) {
+      if (parsed[[i]]$format_spec_needs_expanding) {
         rec = .pformat(parsed[[i]]$format_spec, pargs, with, envir, 
                        recursion_depth - 1, auto_arg_index)
         parsed[[i]]$format_spec = rec$result
@@ -138,7 +138,7 @@ pformat <- function(format_string, ...) {
     }
   }
   
-  return (list(result = do.call(paste0, result), index = auto_arg_index))
+  return(list(result = do.call(paste0, result), index = auto_arg_index))
 }
 
 #' Tells if a string represents an integer

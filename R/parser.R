@@ -34,9 +34,9 @@ pformat_parse = function(format_string) {
   
   piece = function(r) {
     if (is.null(r))
-      return (NULL)
+      return(NULL)
     else
-      return (substr(format_string, r$start, r$end))
+      return(substr(format_string, r$start, r$end))
   }
   
   # this function is a rewriting of cpython's parse_field()
@@ -68,7 +68,7 @@ pformat_parse = function(format_string) {
       if ( c == "]")
         bracket_count = bracket_count - 1
       
-      if (bracket_count == 0 & c %in% c("}", ":", "!"))
+      if (bracket_count == 0 && c %in% c("}", ":", "!"))
         break;
     }
     
@@ -79,7 +79,7 @@ pformat_parse = function(format_string) {
         
         if (it$start > it$end) {
           stop("end of string while looking for conversion specifier")
-          return (list(result = 0))
+          return(list(result = 0))
         }
         
         obj$conversion = current_char()
@@ -90,10 +90,10 @@ pformat_parse = function(format_string) {
           move()
           
           if (c == "}")
-            return (obj)
+            return(obj)
           if (c != ":") {
             stop("expected ':' after conversion specifier")
-            return (list(result = 0))
+            return(list(result = 0))
           }
         }
       }
@@ -138,7 +138,7 @@ pformat_parse = function(format_string) {
     markup_follows = FALSE
     
     if (it$start > it$end)
-      return (NULL);
+      return(NULL);
     
     start = it$start
     
@@ -155,14 +155,14 @@ pformat_parse = function(format_string) {
     at_end = it$start > it$end
     len = it$start - start
     
-    if ((c == "}") & (at_end | c != current_char())) {
+    if ((c == "}") && (at_end | c != current_char())) {
       stop("Single '}' encountered in format string")
-      return (NULL)
+      return(NULL)
     }
     
-    if (at_end & c == '{') {
+    if (at_end && c == '{') {
       stop("Single '{' encountered in format string")
-      return (NULL)
+      return(NULL)
     } 
     
     if (!at_end) {
@@ -176,7 +176,7 @@ pformat_parse = function(format_string) {
     obj$literal_text = substr(format_string, start, start + len - 1)
     
     if (!markup_follows)
-      return (obj)
+      return(obj)
     
     obj2 = parse_field()
     
@@ -189,7 +189,7 @@ pformat_parse = function(format_string) {
       obj$format_spec = ""
     obj$format_spec_needs_expanding = obj2$format_spec_needs_expanding
     obj$conversion = obj2$conversion
-    return (obj)
+    return(obj)
   }
   
   l = list()
@@ -200,7 +200,7 @@ pformat_parse = function(format_string) {
   
   class(l) = c("pformat.compiled", "list")
   
-  return (l)
+  return(l)
 }
 
 # This function is a rewriting of cpython's parse_internal_render_format_spec(),
@@ -244,7 +244,7 @@ pformat_parse = function(format_string) {
       
       if (accumulator > (.Machine$integer.max - digitval)/10) {
         stop("Too many decimal digits in format string")
-        return (NULL)
+        return(NULL)
       }
       
       accumulator = accumulator*10 + digitval
@@ -253,39 +253,39 @@ pformat_parse = function(format_string) {
       num_digits = num_digits + 1
     }
     
-    return (list(result = accumulator, num_digits = num_digits))
+    return(list(result = accumulator, num_digits = num_digits))
   }
   
   align_specified = FALSE
   fill_specified = FALSE
   
   # if the second char is an alignment token, parse the fill char
-  if (end-pos >= 1 & char_at(pos+1) %in% c("<", ">", "=", "^")) {
+  if (end-pos >= 1 && char_at(pos+1) %in% c("<", ">", "=", "^")) {
     spec$align = char_at(pos+1)
     spec$fill = char_at(pos)
     align_specified = TRUE
     fill_specified = TRUE
     pos = pos + 2
-  } else if (end-pos >= 0 & char_at(pos) %in% c("<", ">", "=", "^")) {
+  } else if (end-pos >= 0 && char_at(pos) %in% c("<", ">", "=", "^")) {
     spec$align = char_at(pos)
     align_specified = TRUE
     pos = pos + 1
   }
   
   # parse the sign options
-  if (end-pos >= 0 & char_at(pos) %in% c("+", "-", " ")) {
+  if (end-pos >= 0 && char_at(pos) %in% c("+", "-", " ")) {
     spec$sign = char_at(pos)
     pos = pos + 1
   }
   
   # if the next character is #, we're in alternate mode (only integers)
-  if (end-pos >= 0 & char_at(pos) == "#") {
+  if (end-pos >= 0 && char_at(pos) == "#") {
     spec$alternate = TRUE
     pos = pos + 1
   }
   
   # backwards compatibility
-  if (!fill_specified & end-pos >= 0 & char_at(pos) == "0") {
+  if (!fill_specified && end-pos >= 0 && char_at(pos) == "0") {
     spec$fill = "0"
     if (!align_specified)
       spec$align = "="
@@ -295,7 +295,7 @@ pformat_parse = function(format_string) {
   # parse width
   int = get_integer()
   if (is.null(int))
-    return (NULL)
+    return(NULL)
   
   if (int$num_digit == 0)
     spec$width = -1
@@ -303,23 +303,23 @@ pformat_parse = function(format_string) {
     spec$width = int$result
   
   # parse the thousands separator
-  if (end-pos >= 0 & char_at(pos) == ",") {
+  if (end-pos >= 0 && char_at(pos) == ",") {
     spec$thousands_separators = TRUE
     pos = pos + 1
   }
   
   # parse field precision
-  if (end-pos >= 0 & char_at(pos) == ".") {
+  if (end-pos >= 0 && char_at(pos) == ".") {
     pos = pos + 1
     int = get_integer()
     
     if (is.null(int))
-      return (NULL)
+      return(NULL)
     
     # not having a precision after a dot is an error
     if (int$num_digits == 0) {
       stop("Format specifier missing precision")
-      return (NULL)
+      return(NULL)
     } else {
       spec$precision = int$result
     }
@@ -328,18 +328,16 @@ pformat_parse = function(format_string) {
   if (end-pos >= 1) {
     # more than one char remain, invalid format specifier
     stop("Invalid format specifier")
-    return (NULL)
+    return(NULL)
   }
   
-  if (end-pos == 0) {
-    spec$type = char_at(pos)
-  }
+  spec$type = char_at(pos)
   
-  if ( spec$thousands_separators  & 
-       !(spec$type %in% c("", "d", "e", "f", "g", "E", "G", "%", "F")) ) {
+  if (spec$thousands_separators && 
+      !(spec$type %in% c("", "d", "e", "f", "g", "E", "G", "%", "F")) ) {
     stop(sprintf("Cannot specify ',' with '%s'.", spec$type))
-    return (NULL)
+    return(NULL)
   }
   
-  return (spec)
+  return(spec)
 }

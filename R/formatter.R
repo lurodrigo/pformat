@@ -18,7 +18,7 @@ pformatter = function(value, format_spec) {
 }
 
 pformatter.integer = function(value, format_spec) {
-  if ( inherits(format_spec, "pformat.spec"))
+  if (inherits(format_spec, "pformat.spec"))
     spec = format_spec
   else
     spec = .parse_format_spec(format_spec)
@@ -30,7 +30,7 @@ pformatter.integer = function(value, format_spec) {
 }
 
 pformatter.double = function(value, format_spec) {
-  if ( inherits(format_spec, "pformat.spec"))
+  if (inherits(format_spec, "pformat.spec"))
     spec = format_spec
   else
     spec = .parse_format_spec(format_spec)
@@ -49,7 +49,7 @@ pformatter.complex = function(value, format_spec) {
 pformatter.character = function(value, format_spec) {
   spec = .parse_format_spec(format_spec)
   
-  if ( !(spec$type %in% c("s", "")) ) {
+  if (!(spec$type %in% c("s", "")) ) {
     stop(sprintf("Invalid presentation type '%s' for character objects"),
          spec_type)
   } 
@@ -59,8 +59,8 @@ pformatter.character = function(value, format_spec) {
                       '>' = "right", 
                       '^' = "centre")
   
-  if ( is.null(spec$align) ) spec$align = "left"
-  if ( spec$width == -1 ) spec$width = NULL
+  if (is.null(spec$align)) spec$align = "left"
+  if (spec$width == -1) spec$width = NULL
   # return (format(value, width = spec$width, justify = spec$align))
   
   value
