@@ -22,16 +22,16 @@ calls and reduce computing time inside loops.
 
 ### Basic usage
 
-Every pair of braces is a placeholder. The simplest use case is that of 
-positional formatting: arguments are assigned to placeholders according to their
-position.
+A pair of braces and everything inside them form a placeholds. The simplest use 
+case is that of positional formatting: arguments are assigned to placeholders 
+according to their position.
 
 ```R
 > pformat("{} {}", "one", "two")
 [1] "one two"
 ```
 
-It is possible to give placeholds an explicit positional index. This allows for
+You can give placeholders an explicit positional index. This allows for
 re-arranging the order of display without changing the arguments. *Note:* 
 contrary to Python, in pformat indices start from 1 and not from 0.
 
@@ -88,8 +88,8 @@ same output.
 
 ### Expressions
 
-Placeholders can hold not only variable names but any R expression, provided
-that pformat supports its result type.
+Placeholders can hold not only identifiers but any R expression, provided
+that its result type is supported by pformat.
 
 ```R
 > n = 9
