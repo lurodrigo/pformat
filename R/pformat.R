@@ -1,6 +1,8 @@
 
 #' pformat: brings Python-inspired string interpolation and formatting
 #' 
+#' blablabla
+#' 
 #' @docType package
 #' @name pformat
 NULL

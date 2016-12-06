@@ -1,7 +1,6 @@
 Package: pformat
-Type: Package
 Title: pformat brings powerful string formatting to the R language.
-Version: 1.0.0.9000
+Version: 1.0.0.9001
 Date: 2016-11-23
 Description: pformat is a R implementation of Python's new style string
   interpolation and formatting API. It also implements some original features, 
