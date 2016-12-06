@@ -3,13 +3,14 @@ Type: Package
 Title: pformat brings powerful string formatting to the R language.
 Version: 1.0.0.9000
 Date: 2016-11-23
-Authors@R: person("Luiz Rodrigo", "de Souza", email = "me@lurodrigo.com", 
-                  role = c("cre", "aut", "cph"))
 Description: pformat is a R implementation of Python's new style string
   interpolation and formatting API. It also implements some original features, 
   such as vectorization, support to arbitrary expressions inside placeholders,
   and evaluation of them inside the current scope.
+Authors@R: person("Luiz Rodrigo", "de Souza", email = "me@lurodrigo.com", 
+                  role = c("cre", "aut", "cph"))
 License: MIT + file LICENSE
 URL: https://github.com/lurodrigo/pformat
 BugFixes: https://github.com/lurodrigo/pformat/issues
 RoxygenNote: 5.0.1
+Suggests: testthat

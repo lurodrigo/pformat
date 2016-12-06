@@ -2,9 +2,36 @@
 % Please edit documentation in R/formatter.R
 \name{pformatter}
 \alias{pformatter}
+\alias{pformatter.Date}
+\alias{pformatter.IDate}
+\alias{pformatter.ITime}
+\alias{pformatter.POSIXt}
+\alias{pformatter.character}
+\alias{pformatter.complex}
+\alias{pformatter.default}
+\alias{pformatter.double}
+\alias{pformatter.integer}
 \title{Formats an object for pretty printing}
 \usage{
 pformatter(value, format_spec)
+
+\method{pformatter}{integer}(value, format_spec)
+
+\method{pformatter}{double}(value, format_spec)
+
+\method{pformatter}{complex}(value, format_spec)
+
+\method{pformatter}{character}(value, format_spec)
+
+\method{pformatter}{Date}(value, format_spec)
+
+\method{pformatter}{IDate}(value, format_spec)
+
+\method{pformatter}{ITime}(value, format_spec)
+
+\method{pformatter}{POSIXt}(value, format_spec)
+
+\method{pformatter}{default}(value, format_spec)
 }
 \arguments{
 \item{value}{any R object (conceptually)}
@@ -19,5 +46,28 @@ Format an object according to a format specification
 }
 \details{
 \code{pformatter} is a generic function
+}
+\section{Methods (by class)}{
+\itemize{
+\item \code{integer}: 
+
+\item \code{double}: 
+
+\item \code{complex}: 
+
+\item \code{character}: 
+
+\item \code{Date}: 
+
+\item \code{IDate}: 
+
+\item \code{ITime}: 
+
+\item \code{POSIXt}: 
+
+\item \code{default}: 
+}}
+\examples{
+pformatter(10L, "<0d")
 }
 

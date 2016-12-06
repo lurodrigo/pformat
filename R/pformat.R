@@ -1,9 +1,15 @@
 
+#' pformat: brings Python-inspired string interpolation and formatting
+#' 
+#' @docType package
+#' @name pformat
+NULL
+
 .repr = function (x) paste0(capture.output(dput(x)), collapse = "\n")
 
-#' Perfoms string formatting and interpolation
+#' String formatting and interpolation
 #' 
-#' @description provides pretty string formatting capabilities through
+#' @description Perfoms string formatting and interpolation through
 #' a format specification
 #'
 #' @param format_string a format string (See details for specification) or a
@@ -29,6 +35,12 @@
 #' environment.
 #'
 #' @examples
+#' 
+#' pformat("{} {}", "one", "two")
+#' 
+#' pformat("{2} {1}", "one", "two")
+#' 
+#' pformat("Name: {}; Age: {}", c("Abby", "Bob", "Carl"), 22:24)
 pformat <- function(format_string, ...) {
   pargs = list(...)
   
@@ -56,8 +68,6 @@ pformat <- function(format_string, ...) {
 #'     \item{result}{the output string}
 #'     \item{index}{the value of auto_arg_index}
 #' }
-#'
-#' @examples
 .pformat <- function(format_string, pargs, with, envir, recursion_depth, 
                      auto_arg_index = 1) {
   if (recursion_depth < 0) 
@@ -69,7 +79,7 @@ pformat <- function(format_string, ...) {
   }
   
   get_field = function(field_name) {
-    if (.is_integer(field_name))
+    if (is_integer(field_name))
       return (pargs[[as.integer(field_name)]])
     else {
       # first, try to evaluate the expression using the arguments
@@ -107,7 +117,7 @@ pformat <- function(format_string, ...) {
         
         parsed[[i]]$field_name = as.character(auto_arg_index)
         auto_arg_index = auto_arg_index + 1
-      } else if (.is_integer(parsed[[i]]$field_name)) { 
+      } else if (is_integer(parsed[[i]]$field_name)) { 
         # is a string representing an integer
         if (auto_arg_index > 1)
           stop("Cannot switch from manual field specification to automatic field numbering")
@@ -122,7 +132,7 @@ pformat <- function(format_string, ...) {
       obj = get_field(parsed[[i]]$field_name)
       
       # do any conversion on the resulting object
-      obj = .convert_field(obj, parsed[[i]]$conversion)
+      obj = convert_field(obj, parsed[[i]]$conversion)
       
       
       # expand the format spec, if needed
@@ -148,7 +158,7 @@ pformat <- function(format_string, ...) {
 #' @return a logical vector
 #' 
 #' @details Doesn't work if the string ends with an L
-.is_integer = function(s) {
+is_integer = function(s) {
   v = getOption("warn")
   options(warn = -1)
   x = !is.na(as.integer(s))
@@ -157,7 +167,7 @@ pformat <- function(format_string, ...) {
 }
 
 # do any conversion on the resulting object
-.convert_field = function(value, conversion) {
+convert_field = function(value, conversion) {
   if (is.null(conversion))
     return(value)
   if (conversion == "s")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/pformat.R
 \name{pformat}
 \alias{pformat}
-\title{Perfoms string formatting and interpolation}
+\title{String formatting and interpolation}
 \usage{
 pformat(format_string, ...)
 }
@@ -17,7 +17,7 @@ which named fields or expressions can be evaluated}
 returns a `character` vector with the output
 }
 \description{
-provides pretty string formatting capabilities through
+Perfoms string formatting and interpolation through
 a format specification
 }
 \details{
@@ -34,5 +34,13 @@ more power than numbered fields.
 On placeholders, pformat looks for names first on keyword arguments, then 
 as a member of the with argument object, and only then at the caller's
 environment.
+}
+\examples{
+
+pformat("{} {}", "one", "two")
+
+pformat("{2} {1}", "one", "two")
+
+pformat("Name: {}; Age: {}", c("Abby", "Bob", "Carl"), 22:24)
 }
 

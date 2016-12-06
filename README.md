@@ -20,7 +20,7 @@ Examples
 
 ### Basic usage
 
-A pair of braces and everything inside them form a placeholds. The simplest use case is that of positional formatting: arguments are assigned to placeholders according to their position.
+A pair of braces and everything inside them form a placeholder. The simplest use case is that of positional formatting: arguments are assigned to placeholders according to their position.
 
 ``` r
 pformat("{} {}", "one", "two")

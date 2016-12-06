@@ -23,4 +23,8 @@ markup. Recursive format strings depend on data, and thus can't be
 completely parsed yet. In these cases, \code{pformat_parse()} will still be 
 called by \code{pformat()} with format specifications needing expanding.
 }
+\examples{
+pformat_parse("{} {}")
+pformat_parse("{1} {2}")
+}
 

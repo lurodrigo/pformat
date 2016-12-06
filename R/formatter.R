@@ -12,16 +12,19 @@
 #' @details \code{pformatter} is a generic function
 #'
 #' @examples
+#' pformatter(10L, "<0d")
 pformatter = function(value, format_spec) {
   # return (as.character(value))
   UseMethod("pformatter", value)
 }
 
+#' @describeIn pformatter 
+#' @export
 pformatter.integer = function(value, format_spec) {
   if (inherits(format_spec, "pformat.spec"))
     spec = format_spec
   else
-    spec = .parse_format_spec(format_spec)
+    spec = parse_format_spec(format_spec)
   
   if (spec$type %in% c("e", "E", "f", "F", "g", "G", "n", "%")) 
     return (pformatter.double(as.double(value), spec))
@@ -29,11 +32,13 @@ pformatter.integer = function(value, format_spec) {
   value
 }
 
+#' @describeIn pformatter 
+#' @export
 pformatter.double = function(value, format_spec) {
   if (inherits(format_spec, "pformat.spec"))
     spec = format_spec
   else
-    spec = .parse_format_spec(format_spec)
+    spec = parse_format_spec(format_spec)
   
   if (spec$type %in% c("b", "c", "d", "o", "x", "X", "n")) {
     return (pformatter.integer(as.integer(value), spec))
@@ -42,12 +47,16 @@ pformatter.double = function(value, format_spec) {
   value
 }
 
+#' @describeIn pformatter 
+#' @export
 pformatter.complex = function(value, format_spec) {
   value
 }
 
+#' @describeIn pformatter 
+#' @export
 pformatter.character = function(value, format_spec) {
-  spec = .parse_format_spec(format_spec)
+  spec = parse_format_spec(format_spec)
   
   if (!(spec$type %in% c("s", "")) ) {
     stop(sprintf("Invalid presentation type '%s' for character objects"),
@@ -66,22 +75,32 @@ pformatter.character = function(value, format_spec) {
   value
 }
 
+#' @describeIn pformatter 
+#' @export
 pformatter.Date = function(value, format_spec) {
   strftime(value, format_spec)
 }
 
+#' @describeIn pformatter 
+#' @export
 pformatter.IDate = function(value, format_spec) {
   strftime(value, format_spec)
 }
 
+#' @describeIn pformatter 
+#' @export
 pformatter.ITime = function(value, format_spec) {
   strftime(value, format_spec)
 }
 
+#' @describeIn pformatter 
+#' @export
 pformatter.POSIXt = function(value, format_spec) {
   strftime(value, format_spec)
 }
 
+#' @describeIn pformatter 
+#' @export
 pformatter.default = function(value, format_spec) {
   as.character(value)
 }

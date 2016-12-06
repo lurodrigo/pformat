@@ -16,6 +16,8 @@
 #' called by \code{pformat()} with format specifications needing expanding.
 #'
 #' @examples
+#' pformat_parse("{} {}")
+#' pformat_parse("{1} {2}")
 pformat_parse = function(format_string) {
   
   it = list(start = 1, end = nchar(format_string))
@@ -205,7 +207,7 @@ pformat_parse = function(format_string) {
 
 # This function is a rewriting of cpython's parse_internal_render_format_spec(),
 # located on /Python/formatter_unicode.c
-.parse_format_spec = function(format_spec) {
+parse_format_spec = function(format_spec) {
   
   start = 1
   end = nchar(format_spec)
