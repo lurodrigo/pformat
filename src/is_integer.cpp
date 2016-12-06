@@ -9,7 +9,6 @@ using namespace Rcpp;
 //' @param v a string vector
 //' 
 //' @return a logical vector 
-//' @export
 // [[Rcpp::export]]
 LogicalVector is_integer(CharacterVector v) {
   int n, m = v.size();
@@ -20,9 +19,6 @@ LogicalVector is_integer(CharacterVector v) {
     
     n = v[i].size();
     for (int j = 0; j < n; j++) {
-      if (j == n-1 && v[i][j] == 'L')
-        break;
-      
       if (v[i][j] < '0' || v[i][j] > '9') {
         res[i] = false;
         break;

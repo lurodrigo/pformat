@@ -8,7 +8,6 @@
 #' @param v a string vector
 #' 
 #' @return a logical vector 
-#' @export
 is_integer <- function(v) {
     .Call('pformat_is_integer', PACKAGE = 'pformat', v)
 }
