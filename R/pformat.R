@@ -5,6 +5,8 @@
 #' 
 #' @docType package
 #' @name pformat
+#' @useDynLib pformat
+#' @importFrom Rcpp sourceCpp
 NULL
 
 .repr = function (x) paste0(capture.output(dput(x)), collapse = "\n")
@@ -151,21 +153,6 @@ pformat <- function(format_string, ...) {
   }
   
   return(list(result = do.call(paste0, result), index = auto_arg_index))
-}
-
-#' Tells if a string represents an integer
-#'
-#' @param s a string
-#'
-#' @return a logical vector
-#' 
-#' @details Doesn't work if the string ends with an L
-is_integer = function(s) {
-  v = getOption("warn")
-  options(warn = -1)
-  x = !is.na(as.integer(s))
-  options(warn = v) 
-  return(x)
 }
 
 # do any conversion on the resulting object

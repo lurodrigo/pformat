@@ -13,3 +13,5 @@ URL: https://github.com/lurodrigo/pformat
 BugFixes: https://github.com/lurodrigo/pformat/issues
 RoxygenNote: 5.0.1
 Suggests: testthat
+LinkingTo: Rcpp
+Imports: Rcpp
