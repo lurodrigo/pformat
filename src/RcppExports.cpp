@@ -16,3 +16,24 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// markup
+List markup();
+RcppExport SEXP pformat_markup() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(markup());
+    return rcpp_result_gen;
+END_RCPP
+}
+// pformat_parse2
+List pformat_parse2(StringVector str);
+RcppExport SEXP pformat_pformat_parse2(SEXP strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< StringVector >::type str(strSEXP);
+    rcpp_result_gen = Rcpp::wrap(pformat_parse2(str));
+    return rcpp_result_gen;
+END_RCPP
+}

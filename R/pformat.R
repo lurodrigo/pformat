@@ -7,7 +7,7 @@
 #' @name pformat
 #' @useDynLib pformat
 #' @importFrom Rcpp sourceCpp
-NULL
+"_PACKAGE"
 
 .repr = function (x) paste0(capture.output(dput(x)), collapse = "\n")
 

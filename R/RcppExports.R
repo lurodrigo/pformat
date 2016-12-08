@@ -8,7 +8,18 @@
 #' @param v a string vector
 #' 
 #' @return a logical vector 
+#' @export
 is_integer <- function(v) {
     .Call('pformat_is_integer', PACKAGE = 'pformat', v)
+}
+
+#' @export
+markup <- function() {
+    .Call('pformat_markup', PACKAGE = 'pformat')
+}
+
+#' @export
+pformat_parse2 <- function(str) {
+    .Call('pformat_pformat_parse2', PACKAGE = 'pformat', str)
 }
 
