@@ -155,6 +155,15 @@ pformat <- function(format_string, ...) {
   return(list(result = do.call(paste0, result), index = auto_arg_index))
 }
 
+#' Prints formatted output
+#' 
+#' @description Just like pformat(), but prints to the standard output
+#' @inheritParams pformat
+#' @export
+ppformat = function(...) {
+  cat(pformat(...))
+}
+
 # do any conversion on the resulting object
 convert_field = function(value, conversion) {
   if (is.null(conversion))
