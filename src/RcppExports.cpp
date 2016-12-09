@@ -16,13 +16,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// teste
-void teste(CharacterVector v);
-RcppExport SEXP pformat_teste(SEXP vSEXP) {
+// pformat_parse2
+List pformat_parse2(StringVector v);
+RcppExport SEXP pformat_pformat_parse2(SEXP vSEXP) {
 BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type v(vSEXP);
-    teste(v);
-    return R_NilValue;
+    Rcpp::traits::input_parameter< StringVector >::type v(vSEXP);
+    rcpp_result_gen = Rcpp::wrap(pformat_parse2(v));
+    return rcpp_result_gen;
 END_RCPP
 }

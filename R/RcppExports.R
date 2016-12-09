@@ -14,7 +14,7 @@ is_integer <- function(v) {
 }
 
 #' @export
-teste <- function(v) {
-    invisible(.Call('pformat_teste', PACKAGE = 'pformat', v))
+pformat_parse2 <- function(v) {
+    .Call('pformat_pformat_parse2', PACKAGE = 'pformat', v)
 }
 
