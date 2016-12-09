@@ -21,7 +21,7 @@ pformatter = function(value, format_spec) {
 #' @describeIn pformatter 
 #' @export
 pformatter.integer = function(value, format_spec) {
-  if (inherits(format_spec, "pformat.spec"))
+  if (inherits(format_spec, "pformat_spec"))
     spec = format_spec
   else
     spec = pformat_parse_spec(format_spec)
@@ -35,7 +35,7 @@ pformatter.integer = function(value, format_spec) {
 #' @describeIn pformatter 
 #' @export
 pformatter.double = function(value, format_spec) {
-  if (inherits(format_spec, "pformat.spec"))
+  if (inherits(format_spec, "pformat_spec"))
     spec = format_spec
   else
     spec = pformat_parse_spec(format_spec)

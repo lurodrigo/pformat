@@ -180,11 +180,13 @@ public:
     str_end = format_string.end();
     
     List result;
+  
     Markup m;
     while (!(m = next()).null) {
       result.push_back(m.toList());
     }
     
+    result.attr("class") = "pformat_compiled";
     return result;
   }
  
@@ -246,6 +248,8 @@ public:
       Named("precision") = -1,
       Named("type") = ""
     );
+    
+    spec.attr("class") = "pformat_spec";
     
     format_spec = as<string>(v[0]);
     pos = 0; 

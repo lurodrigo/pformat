@@ -95,7 +95,7 @@ pformat <- function(format_string, ..., with = NULL) {
     }
   }
   
-  if (inherits(format_string, "pformat.compiled"))
+  if (inherits(format_string, "pformat_compiled"))
     parsed = format_string
   else
     parsed = pformat_parse(format_string)
