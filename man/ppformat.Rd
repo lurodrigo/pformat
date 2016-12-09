@@ -4,7 +4,11 @@
 \alias{ppformat}
 \title{Prints formatted output}
 \usage{
-ppformat(...)
+ppformat(format_string, ...)
+}
+\arguments{
+\item{format_string}{a format string (See details for specification) or a
+\code{pformat.compiled} object returned from \code{pformat_parse()}}
 }
 \description{
 Just like pformat(), but prints to the standard output

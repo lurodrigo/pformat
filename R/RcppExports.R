@@ -13,8 +13,27 @@ is_integer <- function(v) {
     .Call('pformat_is_integer', PACKAGE = 'pformat', v)
 }
 
+#' Preparses a format string
+#'
+#' @description  Parses a format string into an internal representation
+#' compatible with \code{pformat()}.
+#'
+#' @param format_string the format string
+#'
+#' @return an object of class \code{pformat.compiled} containing an internal
+#' representation of the format string.
 #' @export
-pformat_parse2 <- function(v) {
-    .Call('pformat_pformat_parse2', PACKAGE = 'pformat', v)
+#'
+#' @details This function actually only parses a "layer" of the format string
+#' markup. Recursive format strings depend on data, and thus can't be
+#' completely parsed yet. In these cases, \code{pformat_parse()} will still be
+#' called by \code{pformat()} with format specifications needing expanding.
+#'
+#' @examples
+#' pformat_parse("{} {}")
+#' pformat_parse("{1} {2}")
+#' @export
+pformat_parse <- function(format_string) {
+    .Call('pformat_pformat_parse', PACKAGE = 'pformat', format_string)
 }
 

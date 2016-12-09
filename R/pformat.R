@@ -160,13 +160,13 @@ pformat <- function(format_string, ...) {
 #' @description Just like pformat(), but prints to the standard output
 #' @inheritParams pformat
 #' @export
-ppformat = function(...) {
-  cat(pformat(...))
+ppformat = function(format_string, ...) {
+  cat(pformat(format_string, ...))
 }
 
 # do any conversion on the resulting object
 convert_field = function(value, conversion) {
-  if (is.null(conversion))
+  if (conversion == "" || is.null(conversion))
     return(value)
   if (conversion == "s")
     return(as.character(value))
