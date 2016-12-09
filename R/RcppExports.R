@@ -37,3 +37,8 @@ pformat_parse <- function(format_string) {
     .Call('pformat_pformat_parse', PACKAGE = 'pformat', format_string)
 }
 
+#' @export
+pformat_parse_spec <- function(v) {
+    .Call('pformat_pformat_parse_spec', PACKAGE = 'pformat', v)
+}
+
