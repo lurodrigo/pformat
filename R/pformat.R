@@ -70,7 +70,9 @@ pformat <- function(format_string, ..., with = NULL) {
   if (recursion_depth < 0) 
     stop("Max string recursion")
   
-  
+  # allows splitting format string over multiple lines
+  if (is.character(format_string) && length(format_string) > 1) 
+    format_string = paste0(format_string, collapse = "");
   
   with = as.list(with)
   for (name in names(pargs)) {
@@ -93,7 +95,7 @@ pformat <- function(format_string, ..., with = NULL) {
     }
   }
   
-  if ( inherits(format_string, "pformat.compiled"))
+  if (inherits(format_string, "pformat.compiled"))
     parsed = format_string
   else
     parsed = pformat_parse(format_string)
