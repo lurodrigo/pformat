@@ -45,15 +45,8 @@
 #' pformat("{2} {1}", "one", "two")
 #' 
 #' pformat("Name: {}; Age: {}", c("Abby", "Bob", "Carl"), 22:24)
-pformat <- function(format_string, ...) {
+pformat <- function(format_string, ..., with = NULL) {
   pargs = list(...)
-  
-  if ("with" %in% names(pargs)) {
-    with = pargs$with
-    pargs$with = NULL
-  } else {
-    with = NULL
-  }
   
   res = .pformat(format_string, pargs, with, parent.frame(), 2)
   return(res$result)
@@ -76,6 +69,8 @@ pformat <- function(format_string, ...) {
                      auto_arg_index = 1) {
   if (recursion_depth < 0) 
     stop("Max string recursion")
+  
+  
   
   with = as.list(with)
   for (name in names(pargs)) {
@@ -160,8 +155,8 @@ pformat <- function(format_string, ...) {
 #' @description Just like pformat(), but prints to the standard output
 #' @inheritParams pformat
 #' @export
-ppformat = function(format_string, ...) {
-  cat(pformat(format_string, ...))
+ppformat = function(format_string, ..., with = NULL) {
+  cat(pformat(format_string, ..., with = with))
 }
 
 # do any conversion on the resulting object

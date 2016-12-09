@@ -6,7 +6,7 @@
 \alias{pformat-package}
 \title{pformat: brings Python-inspired string interpolation and formatting}
 \usage{
-pformat(format_string, ...)
+pformat(format_string, ..., with = NULL)
 }
 \arguments{
 \item{format_string}{a format string (See details for specification) or a
