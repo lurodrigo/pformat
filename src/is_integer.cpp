@@ -16,6 +16,10 @@ LogicalVector is_integer(CharacterVector v) {
   LogicalVector res(m);
 
   for (int i = 0; i < m; i++) {
+    if (v[i].empty()) {
+      res[i] = false;
+      continue;
+    }
     res[i] = true;
     
     n = v[i].size();
