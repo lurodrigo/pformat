@@ -55,7 +55,7 @@ pformat("{}-{}{}", "expr", c("a", "b", "c"), 1:2)
 pformat provides three ways of using named placeholders:
 
 -   keyword arguments.
--   passing a list, data frame, or environment as the first parameter.
+-   passing a list, data frame, or environment as the first parameter. This allows pformat to be chained using the pipe operator `%>%` provided by the `magrittr` package.
 -   evaluation on the current environment.
 
 That's also the order which pformat uses when looking for corresponding names. The following example illustrates the three methods, where all calls produce same output.
@@ -70,6 +70,11 @@ people = data.frame(name = c("Abby", "Bob", "Carl"), age = 22:24)
 pformat(people, "Name: {name}; Age: {age}")
 #> [1] "Name: Abby; Age: 22" "Name: Bob; Age: 23"  "Name: Carl; Age: 24"
 
+# the same as above but using pipe
+library(magrittr)
+people %>% pformat("Name: {name}; Age: {age}")
+#> [1] "Name: Abby; Age: 22" "Name: Bob; Age: 23"  "Name: Carl; Age: 24"
+
 # evaluation on the environment
 name = c("Abby", "Bob", "Carl")
 age = 22:24
@@ -79,7 +84,7 @@ pformat("Name: {name}; Age: {age}")
 
 ### Piping
 
-Passing data frames as the first parameter allows pformat to be chained using the pipe operator `%>%` provided by package `magrittr`.
+Passing data frames as the first parameter
 
 ### Expressions
 
@@ -94,8 +99,8 @@ pformat("{n} x {i} = {n * i}", i = 1:10)
 
 ``` r
 df = data.frame(name = c("Walter", "Frederick", "Lindsey"), 
-           surname = c("Unzueta", "Winstead", "Chambers"))
-pformat(df, "{substr(name, 1, 1)}. {surname}")
+                surname = c("Unzueta", "Winstead", "Chambers"))
+df %>% pformat("{substr(name, 1, 1)}. {surname}")
 #> [1] "W. Unzueta"  "F. Winstead" "L. Chambers"
 ```
 
