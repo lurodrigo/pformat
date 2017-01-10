@@ -9,7 +9,7 @@ Features
 
 -   Supports numeric (`integer`, `double`, `complex`), date (`Date`, `IDate`, `POSIXt`) and `character` types out-of-the-box.
 -   Supports **expressions** inside fields, avoiding intermediate variables.
--   **`with` parameter**: named fields can be evaluated inside lists or data frames, saving typing.
+-   named fields can be evaluated inside lists or data frames, saving typing.
 -   Supports evaluation on the current environment. You can feed `pformat()` only the format string, and it will look for corresponding data on the environment.
 -   It is **vectorized**, allowing formatting of extensive amounts of data with a single call.
 -   It is possible to **preparse** format strings, which may avoid unnecessary calls and reduce computing time inside loops.
@@ -55,7 +55,7 @@ pformat("{}-{}{}", "expr", c("a", "b", "c"), 1:2)
 pformat provides three ways of using named placeholders:
 
 -   keyword arguments.
--   the `with` parameter. Works with lists, data frames, and environments.
+-   passing a list, data frame, or environment as the first parameter.
 -   evaluation on the current environment.
 
 That's also the order which pformat uses when looking for corresponding names. The following example illustrates the three methods, where all calls produce same output.
@@ -65,9 +65,9 @@ That's also the order which pformat uses when looking for corresponding names. T
 pformat("Name: {name}; Age: {age}", name = c("Abby", "Bob", "Carl"), age = 22:24)
 #> [1] "Name: Abby; Age: 22" "Name: Bob; Age: 23"  "Name: Carl; Age: 24"
 
-# the "with" parameter
+# passing a data frame as the first parameter
 people = data.frame(name = c("Abby", "Bob", "Carl"), age = 22:24)
-pformat("Name: {name}; Age: {age}", with = people)
+pformat(people, "Name: {name}; Age: {age}")
 #> [1] "Name: Abby; Age: 22" "Name: Bob; Age: 23"  "Name: Carl; Age: 24"
 
 # evaluation on the environment
@@ -76,6 +76,10 @@ age = 22:24
 pformat("Name: {name}; Age: {age}")
 #> [1] "Name: Abby; Age: 22" "Name: Bob; Age: 23"  "Name: Carl; Age: 24"
 ```
+
+### Piping
+
+Passing data frames as the first parameter allows pformat to be chained using the pipe operator `%>%` provided by package `magrittr`.
 
 ### Expressions
 
@@ -90,8 +94,8 @@ pformat("{n} x {i} = {n * i}", i = 1:10)
 
 ``` r
 df = data.frame(name = c("Walter", "Frederick", "Lindsey"), 
-                surname = c("Unzueta", "Winstead", "Chambers"))
-pformat("{substr(name, 1, 1)}. {surname}", with = df)
+           surname = c("Unzueta", "Winstead", "Chambers"))
+pformat(df, "{substr(name, 1, 1)}. {surname}")
 #> [1] "W. Unzueta"  "F. Winstead" "L. Chambers"
 ```
 

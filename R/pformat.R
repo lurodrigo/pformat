@@ -18,9 +18,7 @@
 #'
 #' @param format_string a format string (See details for specification) or a
 #' \code{pformat.compiled} object returned from \code{pformat_parse()}
-#' @param with a \code{(pair)list}, \code{data.frame} or \code{environment} on 
-#' which named fields or expressions can be evaluated
-#'
+#' 
 #' @return returns a `character` vector with the output
 #' @export
 #' 
@@ -45,8 +43,16 @@
 #' pformat("{2} {1}", "one", "two")
 #' 
 #' pformat("Name: {}; Age: {}", c("Abby", "Bob", "Carl"), 22:24)
-pformat <- function(format_string, ..., with = NULL) {
+pformat <- function(format_string, ...) {
   pargs = list(...)
+  
+  if (is.character(format_string)) {
+    with = NULL
+  } else {
+    with = format_string
+    format_string = pargs[[1]]
+    pargs = pargs[2:length(pargs)]
+  }
   
   res = .pformat(format_string, pargs, with, parent.frame(), 2)
   return(res$result)
@@ -172,4 +178,8 @@ convert_field = function(value, conversion) {
   if (conversion == "a")
     return(.repr(value))
   stop(sprintf("Unknown conversion specifier '%s'", conversion))
+}
+
+.onUnload <- function (libpath) {
+  library.dynam.unload("pformat", libpath)
 }
