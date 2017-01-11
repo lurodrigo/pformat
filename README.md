@@ -1,4 +1,3 @@
-<!-- README.md is generated from README.Rmd. Please edit that file -->
 pformat
 =======
 
@@ -81,10 +80,6 @@ age = 22:24
 pformat("Name: {name}; Age: {age}")
 #> [1] "Name: Abby; Age: 22" "Name: Bob; Age: 23"  "Name: Carl; Age: 24"
 ```
-
-### Piping
-
-Passing data frames as the first parameter
 
 ### Expressions
 
