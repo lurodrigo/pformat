@@ -8,7 +8,7 @@ namespace {
   const char* format_spec;
   int pos, end;
   
-  static int get_integer(int& result) {
+  int get_integer(int& result) {
     int num_digits = 0, digitval;
     
     for (result = 0; pos < end; pos++, num_digits++) {
@@ -20,11 +20,40 @@ namespace {
     
     return num_digits;
   }
+  
+  char count_utf8(const char *str) {
+    unsigned char mask[] = {192, 224, 240};
+    char i = 1;
+
+    if ((*str & mask[0]) == mask[0]) i++;
+    if ((*str & mask[1]) == mask[1]) i++;
+    if ((*str & mask[2]) == mask[2]) i++;
+    
+    return i;
+  }
+  
+  inline bool is_alignment_token(char c) {
+      switch (c) {
+      case '<': case '>': case '=': case '^':
+          return 1;
+      default:
+          return 0;
+      }
+  }
+  
+  inline bool is_sign_element(char c) {
+      switch (c) {
+      case ' ': case '+': case '-':
+          return 1;
+      default:
+          return 0;
+      }
+  }
 }
 
 //' @export
 // [[Rcpp::export]]
-List pformat_parse_spec(StringVector& format) {
+List pformat_parse_spec(String& format) {
   List spec = List::create(
     Named("fill") = " ",
     Named("align") = "",
@@ -38,32 +67,37 @@ List pformat_parse_spec(StringVector& format) {
   
   spec.attr("class") = "pformat_spec";
   
-  format_spec = format[0].begin();
+  cetype_t encoding = format.get_encoding();
+  format_spec = format.get_cstring();
   pos = 0; 
-  end = format[0].size();
+  end = strlen(format_spec);
 
   bool align_specified = false, fill_specified = false;
-  
-  // if the second char is an alignment token, parse the fill char
-  if (end-pos >= 2 && (
-      format_spec[pos+1] == '<' || format_spec[pos+1] == '>' ||
-      format_spec[pos+1] == '^' || format_spec[pos+1] == '=' )) {
+  char count;
+    
+  // treats the case where the fill char is utf8
+  if (encoding == CE_UTF8 && end-pos >= 3 && 
+      (count = count_utf8(format_spec + pos)) > 1 && 
+      is_alignment_token(format_spec[pos+count])) {
+    spec["align"] = format_spec[pos+count];
+    spec["fill"] = String(string(format_spec + pos, format_spec + pos + count));
+    align_specified = true;
+    fill_specified = true;
+    pos += count + 1;
+  } // if the second char is an alignment token, parse the fill char
+  else if (end-pos >= 2 && is_alignment_token(format_spec[pos+1])) {
     spec["align"] = format_spec[pos+1];
     spec["fill"] = format_spec[pos];
     align_specified = true;
     fill_specified = true;
     pos += 2;
-  } if (end-pos >= 1 && (
-      format_spec[pos] == '<' || format_spec[pos] == '>' ||
-      format_spec[pos] == '^' || format_spec[pos] == '=' )) {
-    spec["align"] = format_spec[pos];
+  } else if (end-pos >= 1 && is_alignment_token(format_spec[pos])) {
+    spec["align"] = format_spec[pos++];
     align_specified = true;
-    pos++;
   }
   
   // parse the sign options
-  if (end-pos >= 1 && (format_spec[pos] == '+' || format_spec[pos] == '-' ||
-      format_spec[pos] == ' ')) 
+  if (end-pos >= 1 && is_sign_element(format_spec[pos])) 
     spec["sign"] = format_spec[pos++];
   
   // if the next character is #, we're in alternate mode (only integers)
