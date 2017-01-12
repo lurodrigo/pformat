@@ -38,12 +38,12 @@ is_integer <- function(v) {
 #' pformat_parse("{} {}")
 #' pformat_parse("{1} {2}")
 #' @export
-pformat_parse <- function(v) {
-    .Call('pformat_pformat_parse', PACKAGE = 'pformat', v)
+pformat_parse <- function(format_string) {
+    .Call('pformat_pformat_parse', PACKAGE = 'pformat', format_string)
 }
 
 #' @export
-pformat_parse_spec <- function(v) {
-    .Call('pformat_pformat_parse_spec', PACKAGE = 'pformat', v)
+pformat_parse_spec <- function(format) {
+    .Call('pformat_pformat_parse_spec', PACKAGE = 'pformat', format)
 }
 

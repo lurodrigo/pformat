@@ -192,9 +192,9 @@ namespace {
 //' pformat_parse("{1} {2}")
 //' @export
 // [[Rcpp::export]]
-List pformat_parse(StringVector& v) {
-  it = v[0].begin();
-  str_end = v[0].end();
+List pformat_parse(StringVector& format_string) {
+  it = format_string[0].begin();
+  str_end = format_string[0].end();
   
   List result;
 

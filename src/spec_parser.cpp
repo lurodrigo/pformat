@@ -24,7 +24,7 @@ namespace {
 
 //' @export
 // [[Rcpp::export]]
-List pformat_parse_spec(StringVector& v) {
+List pformat_parse_spec(StringVector& format) {
   List spec = List::create(
     Named("fill") = " ",
     Named("align") = "",
@@ -38,9 +38,9 @@ List pformat_parse_spec(StringVector& v) {
   
   spec.attr("class") = "pformat_spec";
   
-  format_spec = v[0].begin();
+  format_spec = format[0].begin();
   pos = 0; 
-  end = v[0].size();
+  end = format[0].size();
 
   bool align_specified = false, fill_specified = false;
   
