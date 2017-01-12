@@ -7,7 +7,7 @@ using namespace Rcpp;
 using namespace std;
 
 struct SubString {
-  string::iterator begin, end;
+  const char *begin, *end;
   string get() {
     return string(begin, end);
   }
@@ -18,12 +18,12 @@ struct Markup {
     null = true;
   }
   
-  Markup(string& str) {
+  Markup(const char* str_end) {
     format_spec_needs_expanding = false;
-    literal_text.begin = literal_text.end = str.end();
-    field_name.begin = field_name.end = str.end();
+    literal_text.begin = literal_text.end = str_end;
+    field_name.begin = field_name.end = str_end;
     conversion = '\0';
-    format_spec.begin = format_spec.end = str.end();
+    format_spec.begin = format_spec.end = str_end;
     null = false;
     has_markup = false;
   }
@@ -59,8 +59,7 @@ struct Markup {
 const Markup NULL_MARKUP = Markup();
 
 class Parser {
-  string format_string;
-  string::iterator it, str_end;
+  const char *it, *str_end;
   
   // this function is a rewriting of cpython's parse_field()
   // located on /Objects/stringlib/unicode_format.h
@@ -133,7 +132,7 @@ class Parser {
   // this function is a rewriting of cpython's MarkupIterator_next()
   // located on /Objects/stringlib/unicode_format.h
   Markup next() {
-    Markup markup(format_string);
+    Markup markup(str_end);
     char ch;
     
     if (it == str_end)
@@ -175,9 +174,8 @@ class Parser {
   
 public:
   List parse(StringVector& v) {
-    format_string = as<string>(v[0]);
-    it = format_string.begin();
-    str_end = format_string.end();
+    it = v[0].begin();
+    str_end = v[0].end();
     
     List result;
   
@@ -339,3 +337,4 @@ List pformat_parse_spec(StringVector& v) {
   SpecParser p;
   return p.parse(v);
 }
+

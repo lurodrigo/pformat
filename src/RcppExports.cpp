@@ -5,6 +5,16 @@
 
 using namespace Rcpp;
 
+// teste
+void teste(StringVector& v);
+RcppExport SEXP pformat_teste(SEXP vSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< StringVector& >::type v(vSEXP);
+    teste(v);
+    return R_NilValue;
+END_RCPP
+}
 // is_integer
 LogicalVector is_integer(CharacterVector v);
 RcppExport SEXP pformat_is_integer(SEXP vSEXP) {
