@@ -217,7 +217,7 @@ List pformat_parse(StringVector format_string) {
 }
 
 class SpecParser {
-  string format_spec;
+  const char* format_spec;
   int pos, end;
   
   int get_integer(int& result) {
@@ -249,9 +249,9 @@ public:
     
     spec.attr("class") = "pformat_spec";
     
-    format_spec = as<string>(v[0]);
+    format_spec = v[0].begin();
     pos = 0; 
-    end = format_spec.size();
+    end = v[0].size();
   
     bool align_specified = false, fill_specified = false;
     
