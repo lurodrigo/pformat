@@ -6,11 +6,11 @@
 using namespace Rcpp;
 
 // teste
-void teste(StringVector& v);
+void teste(String& v);
 RcppExport SEXP pformat_teste(SEXP vSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< StringVector& >::type v(vSEXP);
+    Rcpp::traits::input_parameter< String& >::type v(vSEXP);
     teste(v);
     return R_NilValue;
 END_RCPP
@@ -38,12 +38,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // pformat_parse_spec
-List pformat_parse_spec(StringVector& format);
+List pformat_parse_spec(String& format);
 RcppExport SEXP pformat_pformat_parse_spec(SEXP formatSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< StringVector& >::type format(formatSEXP);
+    Rcpp::traits::input_parameter< String& >::type format(formatSEXP);
     rcpp_result_gen = Rcpp::wrap(pformat_parse_spec(format));
     return rcpp_result_gen;
 END_RCPP
