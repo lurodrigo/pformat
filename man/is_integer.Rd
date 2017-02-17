@@ -15,4 +15,3 @@ a logical vector
 \description{
 Checks if the characters in a string are in the interval '0' .. '9'
 }
-

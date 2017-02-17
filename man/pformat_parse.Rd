@@ -27,4 +27,3 @@ called by \code{pformat()} with format specifications needing expanding.
 pformat_parse("{} {}")
 pformat_parse("{1} {2}")
 }
-

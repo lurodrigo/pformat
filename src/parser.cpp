@@ -71,8 +71,8 @@ namespace {
       ch = *it;
       it++;
       
-      if (ch == '{')
-        stop("Unexpected '{' in field name");
+      // if (ch == '{')
+      //   stop("Unexpected '{' in field name");
       
       if (ch == '[' || ch == '(') bracket_count++;
       if (ch == ']' || ch == ')') bracket_count--;

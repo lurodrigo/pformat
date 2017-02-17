@@ -2,15 +2,15 @@
 % Please edit documentation in R/formatter.R
 \name{pformatter}
 \alias{pformatter}
+\alias{pformatter.integer}
+\alias{pformatter.double}
+\alias{pformatter.complex}
+\alias{pformatter.character}
 \alias{pformatter.Date}
 \alias{pformatter.IDate}
 \alias{pformatter.ITime}
 \alias{pformatter.POSIXt}
-\alias{pformatter.character}
-\alias{pformatter.complex}
 \alias{pformatter.default}
-\alias{pformatter.double}
-\alias{pformatter.integer}
 \title{Formats an object for pretty printing}
 \usage{
 pformatter(value, format_spec)
@@ -67,7 +67,7 @@ Format an object according to a format specification
 
 \item \code{default}: 
 }}
+
 \examples{
 pformatter(10L, "<0d")
 }
-

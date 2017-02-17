@@ -11,7 +11,7 @@ Authors@R: person("Luiz Rodrigo", "de Souza", email = "me@lurodrigo.com",
 License: MIT + file LICENSE
 URL: https://github.com/lurodrigo/pformat
 BugFixes: https://github.com/lurodrigo/pformat/issues
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.0
 Suggests: testthat
 LinkingTo: Rcpp
 Imports: Rcpp

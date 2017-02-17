@@ -4,16 +4,15 @@
 \name{pformat}
 \alias{pformat}
 \alias{pformat-package}
+\alias{pformat-package}
+\alias{pformat}
 \title{pformat: brings Python-inspired string interpolation and formatting}
 \usage{
-pformat(format_string, ..., with = NULL)
+pformat(format_string, ...)
 }
 \arguments{
 \item{format_string}{a format string (See details for specification) or a
 \code{pformat.compiled} object returned from \code{pformat_parse()}}
-
-\item{with}{a \code{(pair)list}, \code{data.frame} or \code{environment} on 
-which named fields or expressions can be evaluated}
 }
 \value{
 returns a `character` vector with the output
@@ -47,4 +46,14 @@ pformat("{2} {1}", "one", "two")
 
 pformat("Name: {}; Age: {}", c("Abby", "Bob", "Carl"), 22:24)
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/lurodrigo/pformat}
+}
 
+}
+\author{
+\strong{Maintainer}: Luiz Rodrigo de Souza \email{me@lurodrigo.com} [copyright holder]
+
+}

@@ -9,11 +9,7 @@ ppformat(format_string, ..., with = NULL)
 \arguments{
 \item{format_string}{a format string (See details for specification) or a
 \code{pformat.compiled} object returned from \code{pformat_parse()}}
-
-\item{with}{a \code{(pair)list}, \code{data.frame} or \code{environment} on 
-which named fields or expressions can be evaluated}
 }
 \description{
 Just like pformat(), but prints to the standard output
 }
-
