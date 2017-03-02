@@ -1,29 +1,30 @@
 
 #include <Rcpp.h>
 #include <string>
+#include "utils.h"
 using namespace Rcpp;
 using namespace std;
 
 namespace {
+  cetype_t encoding;
+  const char *format;
+  int pos, end;
+
   struct SubString {
-    const char *begin, *end;
+    int begin, end;
     string get() {
-      return string(begin, end);
+      return string(format + begin, format + end);
     }
   };
   
   struct Markup {
-    Markup() {
-      null = true;
-    }
-    
-    Markup(const char* str_end) {
+    Markup(bool isnull) {
       format_spec_needs_expanding = false;
-      literal_text.begin = literal_text.end = str_end;
-      field_name.begin = field_name.end = str_end;
+      literal_text.begin = literal_text.end = end;
+      field_name.begin = field_name.end = end;
       conversion = '\0';
-      format_spec.begin = format_spec.end = str_end;
-      null = false;
+      format_spec.begin = format_spec.end = end;
+      null = isnull;
       has_markup = false;
     }
     
@@ -55,9 +56,7 @@ namespace {
     bool null;
   };
   
-  const Markup NULL_MARKUP = Markup();
-  
-  const char *it, *str_end;
+  const Markup NULL_MARKUP = Markup(false);
   
   // this function is a rewriting of cpython's parse_field()
   // located on /Objects/stringlib/unicode_format.h
@@ -66,11 +65,11 @@ namespace {
     char ch;
     
     // matches the field name
-    field.field_name.begin = it;
-    while (it != str_end) {
-      ch = *it;
-      it++;
-      
+    field.field_name.begin = pos;
+    while (pos != end) {
+      ch = format[pos];
+      pos++;
+
       // if (ch == '{')
       //   stop("Unexpected '{' in field name");
       
@@ -80,19 +79,19 @@ namespace {
       if (bracket_count == 0 && (ch == '}' || ch == ':' || ch == '!'))
         break;
     }
-    field.field_name.end = it-1;
+    field.field_name.end = pos-1;
     
     if (ch == '!' || ch == ':') {
       if (ch == '!') {
-        if (it == str_end) 
+        if (pos == end) 
           stop("End of string while looking for conversion specifier");
         
-        field.conversion = *it;
-        it++;
+        field.conversion = format[pos];
+        pos++;
         
-        if (it != str_end) {
-          ch = *it;
-          it++;
+        if (pos != end) {
+          ch = format[pos];
+          pos++;
           
           if (ch == '}')
             return;
@@ -101,12 +100,12 @@ namespace {
         }
       }
       
-      field.format_spec.begin = it;
+      field.format_spec.begin = pos;
       int braces_count = 1;
       
-      while (it != str_end) {
-        ch = *it;
-        it++;
+      while (pos != end) {
+        ch = format[pos];
+        pos++;
         
         if (ch == '{') {
           field.format_spec_needs_expanding = true;
@@ -115,7 +114,7 @@ namespace {
           braces_count--;
           
           if (braces_count == 0) {
-            field.format_spec.end = it-1;
+            field.format_spec.end = pos-1;
             return;
           }
         }
@@ -130,17 +129,17 @@ namespace {
   // this function is a rewriting of cpython's MarkupIterator_next()
   // located on /Objects/stringlib/unicode_format.h
   Markup next() {
-    Markup markup(str_end);
+    Markup markup(true);
     char ch;
     
-    if (it == str_end)
+    if (pos == end)
       return NULL_MARKUP;
     
-    markup.literal_text.begin = it;
+    markup.literal_text.begin = pos;
     
-    while (it != str_end) {
-      ch = *it;
-      it++;
+    while (pos != end) {
+      ch = format[pos];
+      pos++;
       
       if (ch == '{' || ch == '}') {
         markup.has_markup = true;
@@ -148,17 +147,17 @@ namespace {
       }
     }
     
-    markup.literal_text.end = it;
+    markup.literal_text.end = pos;
     
-    if ((ch == '}') && (it == str_end || ch != *it))
+    if ((ch == '}') && (pos == end || ch != format[pos]))
       stop("Single '}' encountered in format string");
     
-    if (it == str_end && ch == '{')
+    if (pos == end && ch == '{')
       stop("Single '{' encountered in format string");
     
-    if (it != str_end) {
-      if (ch == *it) {
-        it++;
+    if (pos != end) {
+      if (ch == format[pos]) {
+        pos++;
         markup.has_markup = false;
       } else
         markup.literal_text.end--;
@@ -192,13 +191,15 @@ namespace {
 //' pformat_parse("{1} {2}")
 //' @export
 // [[Rcpp::export]]
-List pformat_parse(StringVector& format_string) {
-  it = format_string[0].begin();
-  str_end = format_string[0].end();
+List pformat_parse(String& format_string) {
+  encoding = format_string.get_encoding();
+  format = format_string.get_cstring();
+  pos = 0;
+  end = strlen(format);
   
   List result;
 
-  Markup m;
+  Markup m = Markup(false);
   while (!(m = next()).null) {
     result.push_back(m.toList());
   }

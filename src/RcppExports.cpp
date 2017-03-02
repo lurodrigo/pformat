@@ -27,12 +27,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // pformat_parse
-List pformat_parse(StringVector& format_string);
+List pformat_parse(String& format_string);
 RcppExport SEXP pformat_pformat_parse(SEXP format_stringSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< StringVector& >::type format_string(format_stringSEXP);
+    Rcpp::traits::input_parameter< String& >::type format_string(format_stringSEXP);
     rcpp_result_gen = Rcpp::wrap(pformat_parse(format_string));
     return rcpp_result_gen;
 END_RCPP
