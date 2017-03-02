@@ -31,15 +31,15 @@ namespace {
     List toList() {
       if (has_markup)
         return List::create(
-          Named("literal_text") = literal_text.get(),
-          Named("field_name") = field_name.get(),
+          Named("literal_text") = String(literal_text.get(), encoding),
+          Named("field_name") = String(field_name.get(), encoding),
           Named("conversion") = conversion,
           Named("format_spec") = format_spec.get(),
           Named("format_spec_needs_expanding") = format_spec_needs_expanding
         );
       else
         return List::create(
-          Named("literal_text") = literal_text.get(),
+          Named("literal_text") = String(literal_text.get(), encoding), 
           Named("field_name") = R_NilValue,
           Named("conversion") = R_NilValue,
           Named("format_spec") = R_NilValue,
@@ -56,7 +56,7 @@ namespace {
     bool null;
   };
   
-  const Markup NULL_MARKUP = Markup(false);
+  const Markup NULL_MARKUP = Markup(true);
   
   // this function is a rewriting of cpython's parse_field()
   // located on /Objects/stringlib/unicode_format.h
@@ -129,7 +129,7 @@ namespace {
   // this function is a rewriting of cpython's MarkupIterator_next()
   // located on /Objects/stringlib/unicode_format.h
   Markup next() {
-    Markup markup(true);
+    Markup markup(false);
     char ch;
     
     if (pos == end)
@@ -177,7 +177,7 @@ namespace {
 //'
 //' @param format_string the format string
 //'
-//' @return an object of class \code{pformat.compiled} containing an internal
+//' @return an object of class \code{pformat_compiled} containing an internal
 //' representation of the format string.
 //' @export
 //'

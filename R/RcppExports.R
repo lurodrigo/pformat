@@ -25,7 +25,7 @@ is_integer <- function(v) {
 #'
 #' @param format_string the format string
 #'
-#' @return an object of class \code{pformat.compiled} containing an internal
+#' @return an object of class \code{pformat_compiled} containing an internal
 #' representation of the format string.
 #' @export
 #'
